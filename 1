@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNuts.ai - 革命性的AI翻译平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-blue-50 to-white text-gray-800">
+    <header class="fixed top-0 left-0 right-0 bg-white bg-opacity-90 shadow-md z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <img src="https://via.placeholder.com/40" alt="PNuts.ai Logo" class="w-10 h-10 rounded-full">
+                <span class="text-2xl font-bold text-blue-600">PNuts.ai</span>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <button onclick="scrollToSection('about')" class="text-blue-600 hover:text-blue-800 transition-colors nav-item" data-en="About Us">关于我们</button>
+                <button onclick="scrollToSection('vision')" class="text-blue-600 hover:text-blue-800 transition-colors nav-item" data-en="Our Vision">公司愿景</button>
+                <button onclick="scrollToSection('contact')" class="text-blue-600 hover:text-blue-800 transition-colors nav-item" data-en="Contact Us">联系我们</button>
+            </nav>
+            <select id="langSelector" class="bg-white border border-gray-300 rounded-md px-2 py-1">
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500 text-white">
+            <div class="text-center">
+                <h1 class="text-5xl md:text-7xl font-bold mb-4 lang-item" data-en="Revolutionary AI Translation Platform">革命性的AI翻译平台</h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto lang-item" data-en="PNuts is dedicated to breaking language barriers and creating a world of seamless communication.">PNuts致力于打破语言障碍，创造一个无缝沟通的世界。</p>
+                <button class="bg-white text-blue-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-blue-100 transition-colors lang-item" data-en="Learn More">了解更多</button>
+            </div>
+        </section>
+
+        <section id="vision" class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 lang-item" data-en="Our Vision">我们的愿景</h2>
+                <div class="bg-blue-50 p-8 rounded-lg shadow-lg max-w-3xl mx-auto">
+                    <p class="text-lg text-center italic lang-item" data-en="Through revolutionary AI translation technology, we enable everyone to express themselves freely and understand easily, promoting global cultural exchange and knowledge sharing. We are not just translation; we are the bridge connecting the world.">"通过革命性的AI翻译技术，让每个人都能自由表达、轻松理解，促进全球文化交流与知识共享。我们不仅仅是翻译，我们是连接世界的桥梁。"</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="applications" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 lang-item" data-en="Main Application Areas">主要应用方向</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <div class="text-4xl mb-4">🎓</div>
+                        <h3 class="text-xl font-semibold mb-2 lang-item" data-en="AI Education Classroom Translation">AI教育课堂翻译</h3>
+                        <p class="lang-item" data-en="Providing real-time, accurate classroom translation for international education">为国际化教育提供实时、准确的课堂翻译</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <div class="text-4xl mb-4">🌐</div>
+                        <h3 class="text-xl font-semibold mb-2 lang-item" data-en="Conference Interpretation">会议翻译</h3>
+                        <p class="lang-item" data-en="Offering professional simultaneous interpretation services for international conferences">为国际会议提供专业的同声传译服务</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <div class="text-4xl mb-4">💬</div>
+                        <h3 class="text-xl font-semibold mb-2 lang-item" data-en="Conversation Translation">对话翻译</h3>
+                        <p class="lang-item" data-en="Portable device support for easier daily communication">便携式设备支持，让日常交流更加轻松</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-blue-600 text-white text-center">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 lang-item" data-en="Coming Soon">即将上线</h2>
+                <p class="text-xl mb-8 lang-item" data-en="Stay tuned for our revolutionary AI translation technology!">敬请期待我们的革命性AI翻译技术！</p>
+                <button class="bg-white text-blue-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-blue-100 transition-colors lang-item" data-en="Get the Latest Updates">获取最新动态</button>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact" class="bg-gray-800 text-white py-10">
+        <div class="container mx-auto px-4 text-center">
+            <h4 class="text-xl font-semibold mb-4 lang-item" data-en="Contact Us">联系我们</h4>
+            <p class="mb-2">📧 info@pnuts.ai</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 transition-colors">
+                    <i class="fab fa-facebook text-2xl"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 transition-colors">
+                    <i class="fab fa-twitter text-2xl"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 transition-colors">
+                    <i class="fab fa-linkedin text-2xl"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 transition-colors">
+                    <i class="fab fa-instagram text-2xl"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <script>
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        const langSelector = document.getElementById('langSelector');
+        const langItems = document.querySelectorAll('.lang-item');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        langSelector.addEventListener('change', (e) => {
+            const lang = e.target.value;
+            langItems.forEach(item => {
+                if (lang === 'en') {
+                    item.textContent = item.getAttribute('data-en');
+                } else {
+                    item.textContent = item.getAttribute('data-original') || item.textContent;
+                    item.setAttribute('data-original', item.textContent);
+                }
+            });
+            navItems.forEach(item => {
+                if (lang === 'en') {
+                    item.textContent = item.getAttribute('data-en');
+                } else {
+                    item.textContent = item.getAttribute('data-original') || item.textContent;
+                    item.setAttribute('data-original', item.textContent);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
