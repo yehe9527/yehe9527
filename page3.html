@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNuts.ai - 革命性的AI翻译平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.27/build/spline-viewer.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+        .spline-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .hero-overlay {
+            background: rgba(0, 0, 0, 0.35);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .glow {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        .purple-glow {
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+        }
+        .cosmic-bg {
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(88, 28, 135, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(124, 58, 237, 0.15) 0%, transparent 50%);
+        }
+        .app-card {
+            background: linear-gradient(145deg, rgba(55, 65, 81, 0.6), rgba(17, 24, 39, 0.8));
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+    .language-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 4px;
+        padding: 5px 0;
+        z-index: 1000;
+    }
+
+    .language-menu.hidden {
+        display: none;
+    }
+        .language-menu button {
+            display: block;
+            width: 100%;
+            padding: 5px 10px;
+            text-align: left;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .language-menu button:hover {
+            background-color: #333;
+        }
+	.feature-card {
+    background: linear-gradient(145deg, rgba(55, 65, 81, 0.6), rgba(17, 24, 39, 0.8));
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+    </style>
+<header class="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 backdrop-blur-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <img src="logo.png" alt="Pnuts.ai Logo" class="w-10 h-10 rounded-lg">
+            <span class="text-2xl font-bold">
+                <span class="text-white">Pnuts</span>
+                <span class="text-purple-400">.</span>
+                <span class="text-white">AI</span>
+            </span>
+        </div>
+        <nav class="hidden md:flex space-x-6">
+    <button onclick="scrollToSection('language-space')" class="text-white hover:text-purple-300 transition-colors nav-item" data-en="Language Space" data-km="លំហភាសា">语言智慧空间</button>
+    <button onclick="scrollToSection('ai-web3')" class="text-white hover:text-purple-300 transition-colors nav-item" data-en="AI & Web3" data-km="AI និង Web3">AI与Web3</button>
+    <button onclick="scrollToSection('applications')" class="text-white hover:text-purple-300 transition-colors nav-item" data-en="Applications" data-km="កម្មវិធី">应用方向</button>
+    <button onclick="scrollToSection('contact')" class="text-white hover:text-purple-300 transition-colors nav-item" data-en="Contact Us" data-km="ទាក់ទងមកយើង">联系我们</button>
+</nav>
+        <div class="relative">
+    <img src="language.png" alt="Language" class="language-icon w-6 h-6 cursor-pointer" onclick="toggleLanguageMenu()">
+    <div id="languageMenu" class="language-menu hidden">
+        <button onclick="changeLanguage('zh')">中文</button>
+        <button onclick="changeLanguage('en')">English</button>
+        <button onclick="changeLanguage('km')">ភាសាខ្មែរ</button>
+    </div>
+</div>
+    </div>
+</header>
+
+    <main>
+        <section id="hero" class="h-screen flex items-center justify-center relative overflow-hidden">
+    <div class="spline-container">
+        <spline-viewer url="https://prod.spline.design/UHd0UXDvl2yrENiP/scene.splinecode"></spline-viewer>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content text-center">
+        <h1 class="text-5xl md:text-7xl font-bold mb-4 lang-item glow" data-en="PNUTS.AI: Revolutionary AI Translation Platform" data-km="PNUTS.AI: វេទិកាបកប្រែ AI ដែលបដិវត្តន៍">PNUTS.AI：颠覆传统翻译的革命性平台</h1>
+        <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto lang-item" data-en="Breaking language barriers, connecting global wisdom." data-km="បំបែកឧបសគ្គភាសា ភ្ជាប់ប្រាជ្ញាសកល។">突破语言界限，连接全球智慧。</p>
+        <ul class="text-lg mb-8 space-y-2">
+            <li class="lang-item" data-en="✓ Fast and precise translation in 200+ languages" data-km="✓ ការបកប្រែលឿននិងច្បាស់លាស់ជាង ២០០ ភាសា">✓ 支持200+语言的极速精准翻译</li>
+            <li class="lang-item" data-en="✓ Seamless voice-to-voice conversion" data-km="✓ ការបំលែងសម្លេងទៅសម្លេងដោយរលូន">✓ 语音到语音的无缝转换</li>
+            <li class="lang-item" data-en="✓ Creating a new era of barrier-free global communication" data-km="✓ បង្កើតសម័យថ្មីនៃការទំនាក់ទំនងសកលដោយគ្មានរបាំង">✓ 打造无障碍全球交流新纪元</li>
+        </ul>
+        <button class="bg-purple-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-purple-500 transition-colors lang-item purple-glow" data-en="Learn More" data-km="ស្វែងយល់បន្ថែម">了解更多</button>
+    </div>
+</section>
+
+	<section id="language-space" class="py-20 cosmic-bg">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 lang-item purple-glow" data-en="Language Intelligent Space: Reshaping Communication Experience" data-km="លំហប្រាជ្ញាភាសា៖ កែប្រែបទពិសោធន៍ទំនាក់ទំនង">语言智慧空间：重塑交流体验</h2>
+        <p class="text-xl text-center mb-12 lang-item" data-en="PNUTS' Language Intelligent Space is an innovative multi-functional H5 platform that provides:" data-km="លំហប្រាជ្ញាភាសារបស់ PNUTS គឺជាវេទិកា H5 ពហុមុខងារថ្មីប្រកបដោយនវានុវត្តន៍ ដែលផ្តល់ជូន៖">PNUTS的语言智慧空间是一个创新的多功能H5平台，为用户提供：</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="feature-card p-6 rounded-lg text-center">
+                <div class="text-4xl mb-4">🔄</div>
+                <h3 class="text-xl font-semibold mb-2 lang-item" data-en="Real-time translation and smart history" data-km="ការបកប្រែភ្លាមៗ និងប្រវត្តិឆ្លាតវៃ">实时翻译与智能历史记录</h3>
+            </div>
+            <div class="feature-card p-6 rounded-lg text-center">
+                <div class="text-4xl mb-4">🤖</div>
+                <h3 class="text-xl font-semibold mb-2 lang-item" data-en="Multi-AI agents collaborating to optimize translation quality" data-km="ភ្នាក់ងារ AI ច្រើនសហការគ្នាដើម្បីបង្កើនគុណភាពបកប្រែ">多AI智能体协同优化翻译质量</h3>
+            </div>
+            <div class="feature-card p-6 rounded-lg text-center">
+                <div class="text-4xl mb-4">👥</div>
+                <h3 class="text-xl font-semibold mb-2 lang-item" data-en="Multi-person real-time collaboration and personalized interface selection" data-km="កិច្ចសហការភ្លាមៗពីមនុស្សច្រើននាក់ និងការជ្រើសរើសចំណុចប្រទាក់ផ្ទាល់ខ្លួន">多人实时协作与个性化界面选择</h3>
+            </div>
+            <div class="feature-card p-6 rounded-lg text-center">
+                <div class="text-4xl mb-4">📈</div>
+                <h3 class="text-xl font-semibold mb-2 lang-item" data-en="Deep learning-based continuous optimization mechanism" data-km="យន្តការបង្កើនប្រសិទ្ធភាពជាប់លាប់ដោយផ្អែកលើការរៀនសូត្រជ្រៅ">基于深度学习的持续优化机制，不断提升翻译精准度</h3>
+            </div>
+        </div>
+        <p class="text-xl text-center mt-12 lang-item" data-en="Whether for learning, work, or cross-cultural communication, the Language Intelligent Space opens up a new chapter of borderless communication for you." data-km="មិនថាសម្រាប់ការរៀនសូត្រ ការងារ ឬការទំនាក់ទំនងឆ្លងវប្បធម៌ លំហប្រាជ្ញាភាសាបើកជំពូកថ្មីនៃការទំនាក់ទំនងគ្មានព្រំដែនសម្រាប់អ្នក។">无论是学习、工作还是跨文化交流，语言智慧空间都为您开启无界沟通的新篇章。</p>
+    </div>
+</section>
+<section id="ai-web3" class="py-20 cosmic-bg">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 lang-item purple-glow" data-en="Perfect Integration of AI and Web3: Building the Future Translation Ecosystem" data-km="ការរួមបញ្ចូលគ្នាល្អឥតខ្ចោះរវាង AI និង Web3៖ ការកសាងប្រព័ន្ធអេកូឡូស៊ីបកប្រែនាពេលអនាគត">AI与Web3的完美融合：构建未来翻译生态</h2>
+        <p class="text-xl text-center mb-12 lang-item" data-en="PNUTS leverages cutting-edge AI and Web3 technologies to revolutionize the translation landscape:" data-km="PNUTS ប្រើប្រាស់បច្ចេកវិទ្យា AI និង Web3 ទំនើបបំផុតដើម្បីធ្វើបដិវត្តន៍ទេសភាពនៃការបកប្រែ៖">PNUTS运用尖端AI和Web3技术，彻底革新翻译领域：</p>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="feature-card p-6 rounded-lg">
+                <h3 class="text-2xl font-semibold mb-4 lang-item" data-en="1. Decentralized Computing Power Support" data-km="១. ការគាំទ្រកម្លាំងគណនាវិមជ្ឈការ">1. 去中心化算力支持</h3>
+                <p class="lang-item" data-en="Based on the DEPIN project Titan, deploy global distributed data centers to support self-developed large model training and inference." data-km="ផ្អែកលើគម្រោង DEPIN Titan អនុវត្តមជ្ឈមណ្ឌលទិន្នន័យបែងចែកសកលដើម្បីគាំទ្រការបណ្តុះបណ្តាល និងការសន្និដ្ឋានគំរូធំៗដែលអភិវឌ្ឍដោយខ្លួនឯង។">基于DEPIN项目Titan，部署全球分布式数据中心，支持自研大模型训练与推理。</p>
+            </div>
+            <div class="feature-card p-6 rounded-lg">
+                <h3 class="text-2xl font-semibold mb-4 lang-item" data-en="2. Data Sovereignty and Permanent Storage" data-km="២. អធិបតេយ្យភាពទិន្នន័យ និងការរក្សាទុកអចិន្ត្រៃយ៍">2. 数据主权与永续存储</h3>
+                <p class="lang-item" data-en="Through Web3 decentralized storage, ensure user data security and integrity." data-km="តាមរយៈការរក្សាទុកវិមជ្ឈការ Web3 ធានាសុវត្ថិភាព និងសុចរិតភាពទិន្នន័យអ្នកប្រើប្រាស់។">通过Web3去中心化存储，确保用户数据安全与完整性。</p>
+            </div>
+            <div class="feature-card p-6 rounded-lg">
+                <h3 class="text-2xl font-semibold mb-4 lang-item" data-en="3. DEHIN Mechanism" data-km="៣. យន្តការ DEHIN">3. DEHIN机制</h3>
+                <p class="lang-item" data-en="Introduce Decentralized Human Intelligent Network, combining expert wisdom to continuously optimize the translation model." data-km="ណែនាំបណ្តាញប្រាជ្ញាមនុស្សវិមជ្ឈការ រួមបញ្ចូលប្រាជ្ញាអ្នកជំនាញដើម្បីបង្កើនប្រសិទ្ធភាពគំរូបកប្រែជាប់ជានិច្ច។">引入Decentralized Human Intelligent Network，结合专家智慧持续优化翻译模型。</p>
+            </div>
+            <div class="feature-card p-6 rounded-lg">
+                <h3 class="text-2xl font-semibold mb-4 lang-item" data-en="4. Ecosystem Co-building" data-km="៤. ការកសាងប្រព័ន្ធអេកូឡូស៊ីរួមគ្នា">4. 生态共建</h3>
+                <p class="lang-item" data-en="PNUTS joins hands with GFI, NEST, and AIII to jointly promote the future of human-machine collaborative intelligence in translation." data-km="PNUTS ចាប់ដៃជាមួយ GFI, NEST និង AIII ដើម្បីជំរុញរួមគ្នានូវអនាគតនៃប្រាជ្ញាសហការមនុស្ស-ម៉ាស៊ីនក្នុងការបកប្រែ។">PNUTS携手GFI、NEST和AIII，共同推动人机协同智能的翻译未来。</p>
+            </div>
+        </div>
+        <p class="text-xl text-center mt-12 lang-item" data-en="Join PNUTS, experience the language technology revolution interwoven with AI and Web3, and open a new era of global communication!" data-km="ចូលរួមជាមួយ PNUTS ទទួលបានបទពិសោធន៍នៃបដិវត្តន៍បច្ចេកវិទ្យាភាសាដែលត្របាញចូលគ្នារវាង AI និង Web3 ហើយបើកសម័យថ្មីនៃការទំនាក់ទំនងសកល!">加入PNUTS，体验AI与Web3交织的语言科技革命，开启全球沟通新纪元！</p>
+    </div>
+</section>
+
+       <section id="applications" class="py-20 cosmic-bg">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 lang-item purple-glow" data-en="Main Application Areas" data-km="ផ្នែកអនុវត្តន៍សំខាន់ៗ">主要应用方向</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="app-card p-6 rounded-lg float">
+                <div class="text-4xl mb-4 text-purple-400">🎓</div>
+                <h3 class="text-xl font-semibold mb-2 lang-item text-purple-300" data-en="AI Education Classroom Translation" data-km="ការបកប្រែថ្នាក់រៀន AI អប់រំ">AI教育课堂翻译</h3>
+                <p class="lang-item text-gray-300 mb-4" data-en="Providing real-time, accurate classroom translation for international education" data-km="ផ្តល់ការបកប្រែថ្នាក់រៀនភ្លាមៗ និងត្រឹមត្រូវសម្រាប់ការអប់រំអន្តរជាតិ">为国际化教育提供实时、准确的课堂翻译</p>
+                <button class="bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-purple-500 transition-colors lang-item" data-en="Coming Soon" data-km="មកដល់ឆាប់ៗនេះ">敬请期待</button>
+            </div>
+            <div class="app-card p-6 rounded-lg float" style="animation-delay: 0.2s;">
+                <div class="text-4xl mb-4 text-purple-400">🌐</div>
+                <h3 class="text-xl font-semibold mb-2 lang-item text-purple-300" data-en="Conference Interpretation" data-km="ការបកប្រែសន្និសីទ">会议翻译</h3>
+                <p class="lang-item text-gray-300 mb-4" data-en="Offering professional simultaneous interpretation services for international conferences" data-km="ផ្តល់សេវាបកប្រែភ្លាមៗជាវិជ្ជាជីវៈសម្រាប់សន្និសីទអន្តរជាតិ">为国际会议提供专业的同声传译服务</p>
+                <a href="https://consoles.pnuts.ai" target="_blank" class="bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-purple-500 transition-colors lang-item" data-en="Apply for Trial" data-km="ដាក់ពាក្យសុំសាកល្បង">申请试用</a>
+            </div>
+            <div class="app-card p-6 rounded-lg float" style="animation-delay: 0.4s;">
+                <div class="text-4xl mb-4 text-purple-400">💬</div>
+                <h3 class="text-xl font-semibold mb-2 lang-item text-purple-300" data-en="Conversation Translation" data-km="ការបកប្រែការសន្ទនា">对话翻译</h3>
+                <p class="lang-item text-gray-300 mb-4" data-en="Portable device support for easier daily communication" data-km="ការគាំទ្រឧបករណ៍ចល័តសម្រាប់ការទំនាក់ទំនងប្រចាំថ្ងៃកាន់តែងាយស្រួល">便携式设备支持，让日常交流更加轻松</p>
+                <button class="bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-purple-500 transition-colors lang-item" data-en="Coming Soon" data-km="មកដល់ឆាប់ៗនេះ">敬请期待</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <section class="py-20 bg-gradient-to-r from-purple-900 to-blue-900">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 lang-item glow" data-en="Coming Soon" data-km="មកដល់ឆាប់ៗនេះ">即将上线</h2>
+                <p class="text-xl mb-8 lang-item" data-en="Stay tuned for our revolutionary AI translation technology!" data-km="សូមតាមដានបច្ចេកវិទ្យាបកប្រែ AI ដែលបដិវត្តន៍របស់យើង!">敬请期待我们的革命性AI翻译技术！</p>
+                <button class="bg-white text-purple-900 px-8 py-3 rounded-full text-lg font-semibold hover:bg-purple-100 transition-colors lang-item purple-glow" data-en="Get the Latest Updates" data-km="ទទួលបានព័ត៌មានថ្មីៗបំផុត">获取最新动态</button>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact" class="bg-gray-900 text-white py-10">
+    <div class="container mx-auto px-4 text-center">
+        <h4 class="text-xl font-semibold mb-4 lang-item purple-glow" data-en="Contact Us" data-km="ទាក់ទងមកយើង">联系我们</h4>
+        <p class="text-lg font-medium mb-4 lang-item" data-en="Singapore Peanut Translation Co., Ltd." data-km="ក្រុមហ៊ុនបកប្រែសៀងហ្គាពរសង្កែ">新加坡花生翻译有限公司</p>
+        <p class="mb-2">📧 info@pnuts.ai</p>
+        <div class="flex justify-center space-x-4 mt-4">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:text-purple-100 transition-colors">
+                <i class="fab fa-facebook text-2xl"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:text-purple-100 transition-colors">
+                <i class="fab fa-twitter text-2xl"></i>
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:text-purple-100 transition-colors">
+                <i class="fab fa-linkedin text-2xl"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:text-purple-100 transition-colors">
+                <i class="fab fa-instagram text-2xl"></i>
+            </a>
+        </div>
+    </div>
+</footer>
+
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+<script>
+    function scrollToSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    function toggleLanguageMenu() {
+        const menu = document.getElementById('languageMenu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function changeLanguage(lang) {
+        const elements = document.querySelectorAll('.lang-item, .nav-item');
+        elements.forEach(item => {
+            const text = item.getAttribute(`data-${lang}`);
+            if (text) {
+                item.textContent = text;
+            }
+        });
+
+        document.documentElement.lang = lang;
+        toggleLanguageMenu(); // 切换语言后隐藏菜单
+    }
+
+    // 关闭语言菜单当点击页面其他地方时
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('languageMenu');
+        const icon = document.querySelector('.language-icon');
+        if (menu.style.display === 'block' && !menu.contains(event.target) && !icon.contains(event.target)) {
+            menu.style.display = 'none';
+        }
+    });
+
+    // 页面加载时初始化
+    window.onload = function() {
+        // 确保语言菜单初始状态为隐藏
+        document.getElementById('languageMenu').style.display = 'none';
+        
+        // 添加 data-zh 属性（如果之前没有的话）
+        document.querySelectorAll('.lang-item, .nav-item').forEach(item => {
+            if (!item.hasAttribute('data-zh')) {
+                item.setAttribute('data-zh', item.textContent.trim());
+            }
+        });
+
+        // 设置初始语言为中文，但不显示菜单
+        changeLanguage('zh');
+    };
+</script>
+</body>
+</html>
