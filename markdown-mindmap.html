@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown思维导图渲染器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.14.0/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #output {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Markdown思维导图渲染器</h1>
+        <textarea id="input" placeholder="在此输入Markdown格式的思维导图..."></textarea>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        mermaid.initialize({startOnLoad: true, theme: 'default'});
+
+        function parseMarkdownToMermaid(markdown) {
+            const lines = markdown.split('\n');
+            let mermaidCode = 'graph LR\n';
+            let nodeId = 0;
+            const nodeMap = new Map();
+
+            function getNodeId(text) {
+                if (!nodeMap.has(text)) {
+                    nodeMap.set(text, `node${nodeId++}`);
+                }
+                return nodeMap.get(text);
+            }
+
+            let previousLevel = 0;
+            let previousNodes = [];
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (line === '') return;
+
+                const headingMatch = line.match(/^(#+)\s*(.*)/);
+                if (headingMatch && headingMatch[2].trim() !== '') {
+                    const level = headingMatch[1].length;
+                    const text = headingMatch[2].replace(/"/g, "'");  // 替换双引号为单引号
+                    const currentNodeId = getNodeId(text);
+
+                    mermaidCode += `    ${currentNodeId}["${text}"]\n`;
+
+                    if (level > 1 && previousNodes.length > 0) {
+                        const parentNodeId = previousNodes[level - 2];
+                        mermaidCode += `    ${parentNodeId} --> ${currentNodeId}\n`;
+                    }
+
+                    previousNodes[level - 1] = currentNodeId;
+                    previousLevel = level;
+                }
+            });
+
+            return mermaidCode;
+        }
+
+        function renderMindmap() {
+            const input = document.getElementById('input').value;
+            const output = document.getElementById('output');
+            const mermaidCode = parseMarkdownToMermaid(input);
+            output.innerHTML = `<div class="mermaid">${mermaidCode}</div>`;
+            mermaid.init(undefined, '.mermaid');
+        }
+
+        document.getElementById('input').addEventListener('input', renderMindmap);
+
+        // 初始示例
+        document.getElementById('input').value = `# 网络解耦与泛化性能
+## 1. 过拟合与自由度
+### 过少的解耦
+## 2. 过度解耦的风险
+### 解耦过多
+## 3. 潜在空间中的信息提取
+### 个人观点`;
+        renderMindmap();
+    </script>
+</body>
+</html>
