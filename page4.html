@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNUTS.AI - 消除全人类的语言障碍</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.27/build/spline-viewer.js"></script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+        .spline-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .hero-overlay {
+            background: rgba(0, 0, 0, 0.35);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 4rem 2rem 2rem;
+        }
+        .main-title {
+            font-size: 4rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+        }
+        .description {
+            font-size: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .purple-glow {
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+        }
+        .cosmic-bg {
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(88, 28, 135, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(124, 58, 237, 0.15) 0%, transparent 50%);
+        }
+        .app-card {
+            background: linear-gradient(145deg, rgba(55, 65, 81, 0.6), rgba(17, 24, 39, 0.8));
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        .language-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 5px 0;
+            z-index: 1000;
+        }
+        .language-menu.hidden {
+            display: none;
+        }
+        .language-menu button {
+            display: block;
+            width: 100%;
+            padding: 5px 10px;
+            text-align: left;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .language-menu button:hover {
+            background-color: #333;
+        }
+        @media (min-width: 768px) {
+            .main-title {
+                font-size: 5rem;
+            }
+            .subtitle {
+                font-size: 2rem;
+            }
+            .description {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 backdrop-blur-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <img src="logo.png" alt="Pnuts.ai Logo" class="w-10 h-10 rounded-lg">
+                <span class="text-2xl font-bold">
+                    <span class="text-white">Pnuts</span>
+                    <span class="text-purple-400">.</span>
+                    <span class="text-white">AI</span>
+                </span>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <button onclick="scrollToSection('hero')" class="text-white hover:text-purple-300 transition-colors nav-item" data-en="Vision" data-km="ចក្ខុវិស័យ">愿景</button>
+                <button onclick="scrollToSection('star-product')" class="text-white hover:text-purple-300 transition-colors nav-item" data-en="Study Helper" data-km="ជំនួយការសិក្សា">学帮</button>
+                <button onclick="scrollToSection('other-products')" class="text-white hover:text-purple-300 transition-colors nav-item" data-en="Other Products" data-km="ផលិតផលផ្សេងទៀត">其他产品</button>
+                <button onclick="scrollToSection('contact')" class="text-white hover:text-purple-300 transition-colors nav-item" data-en="Contact Us" data-km="ទាក់ទងមកយើង">联系我们</button>
+            </nav>
+            <div class="relative">
+                <img src="language.png" alt="Language" class="language-icon w-6 h-6 cursor-pointer" onclick="toggleLanguageMenu()">
+                <div id="languageMenu" class="language-menu hidden">
+                    <button onclick="changeLanguage('zh')">中文</button>
+                    <button onclick="changeLanguage('en')">English</button>
+                    <button onclick="changeLanguage('km')">ភាសាខ្មែរ</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="h-screen flex items-center justify-center relative overflow-hidden">
+            <div class="spline-container">
+                <spline-viewer url="https://prod.spline.design/UHd0UXDvl2yrENiP/scene.splinecode"></spline-viewer>
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content text-center container mx-auto px-4">
+                <div class="mb-8">
+                    <h1 class="main-title lang-item" data-en="PNUTS.AI: Eliminating Language Barriers for All Humanity" data-km="PNUTS.AI: លុបបំបាត់របាំងភាសាសម្រាប់មនុស្សជាតិទាំងអស់">PNUTS.AI：消除全人类的语言障碍</h1>
+                </div>
+                <div>
+                    <h2 class="subtitle lang-item" data-en="This is not just translation, but a revolution in communication" data-km="នេះមិនមែនគ្រាន់តែជាការបកប្រែទេ ប៉ុន្តែជាបដិវត្តន៍នៃការទំនាក់ទំនង">这不只是翻译，而是沟通的革命</h2>
+                    <p class="description lang-item" data-en="pnuts Using powerful AI large model technology, we provide users with accurate, easy-to-understand translations that do not lose any meaning, as well as real-time synchronous communication effects from speech to speech. Combined with Web3 decentralized storage technology, we achieve data sovereignty and ensure that data is never lost." data-km="pnuts ដោយប្រើបច្ចេកវិទ្យាគំរូធំ AI ដ៏មានឥទ្ធិពល យើងផ្តល់ជូនអ្នកប្រើប្រាស់នូវការបកប្រែដែលត្រឹមត្រូវ ងាយយល់ និងមិនបាត់បង់អត្ថន័យណាមួយ ព្រមទាំងផលប៉ះពាល់នៃការទំនាក់ទំនងសមកាលកម្មភ្លាមៗពីការនិយាយទៅការនិយាយ។ រួមផ្សំជាមួយបច្ចេកវិទ្យារក្សាទុកវិមជ្ឈការ Web3 យើងសម្រេចបាននូវអធិបតេយ្យភាពទិន្នន័យ និងធានាថាទិន្នន័យមិនដែលបាត់បង់។">pnuts使用强大的ai大模型技术，为用户提供精准、易理解且不丢失任何含义的翻译，以及语音到语音的实时同步沟通效果。同时结合web3去中心化存储技术，实现数据主权，保证数据永不丢失。</p>
+                </div>
+            </div>
+        </section>
+
+        <div id="star-product"></div>
+
+        <section id="other-products" class="py-20 cosmic-bg">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 lang-item purple-glow" data-en="Other Products" data-km="ផលិតផលផ្សេងទៀត">其他产品</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="app-card p-6 rounded-lg float">
+                        <div class="text-4xl mb-4 text-purple-400">🎓</div>
+                        <h3 class="text-xl font-semibold mb-2 lang-item text-purple-300" data-en="Conference Interpretation" data-km="ការបកប្រែសន្និសីទ">会议翻译</h3>
+                        <p class="lang-item text-gray-300 mb-4" data-en="Providing professional simultaneous interpretation services for international conferences" data-km="ផ្តល់សេវាបកប្រែភ្លាមៗជាវិជ្ជាជីវៈសម្រាប់សន្និសីទអន្តរជាតិ">为国际会议提供专业的同声传译服务</p>
+                        <button class="bg-gray-500 text-white px-4 py-2 rounded-full text-sm font-semibold cursor-not-allowed lang-item" data-en="Coming Soon" data-km="មកដល់ឆាប់ៗនេះ">敬请期待</button>
+                    </div>
+                    <div class="app-card p-6 rounded-lg float" style="animation-delay: 0.2s;">
+                        <div class="text-4xl mb-4 text-purple-400">🌐</div>
+                        <h3 class="text-xl font-semibold mb-2 lang-item text-purple-300" data-en="Conversation Translation" data-km="ការបកប្រែការសន្ទនា">对话翻译</h3>
+                        <p class="lang-item text-gray-300 mb-4" data-en="Portable device support for easier daily communication" data-km="ការគាំទ្រឧបករណ៍ចល័តសម្រាប់ការទំនាក់ទំនងប្រចាំថ្ងៃកាន់តែងាយស្រួល">便携式设备支持，让日常交流更加轻松</p>
+                        <a href="https://test-gpt-client.bdnft.com/translate?cf_id=9df6abe0-6ab1-4231-9dac-e8a31b5c98e6" target="_blank" rel="noopener noreferrer" class="inline-block bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors lang-item" data-en="Try Demo" data-km="សាកល្បងឌីម៉ូ">试用demo</a>
+                    </div>
+                    <div class="app-card p-6 rounded-lg float" style="animation-delay: 0.4s;">
+                        <div class="text-4xl mb-4 text-purple-400">💬</div>
+                        <h3 class="text-xl font-semibold mb-2 lang-item text-purple-300" data-en="Video Translation" data-km="ការបកប្រែវីដេអូ">视频翻译</h3>
+                        <p class="lang-item text-gray-300 mb-4" data-en="One-click creation of Netflix-level bilingual subtitles" data-km="ការបង្កើតអក្សររត់ពីរភាសាកម្រិត Netflix ដោយចុចតែមួយ">一键制作Netflix级别双语翻译字幕</p>
+                        <button  class="bg-gray-500 text-white px-4 py-2 rounded-full text-sm font-semibold cursor-not-allowed lang-item" data-en="Coming Soon" data-km="មកដល់ឆាប់ៗនេះ">敬请期待</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact" class="bg-gray-900 text-white py-10">
+        <div class="container mx-auto px-4 text-center">
+            <h4 class="text-xl font-semibold mb-4 lang-item purple-glow" data-en="Contact Us" data-km="ទាក់ទងមកយើង">联系我们</h4>
+            <p class="text-lg font-medium mb-4 lang-item" data-en="Singapore Peanut Translation Co., Ltd." data-km="ក្រុមហ៊ុនបកប្រែសៀងហ្គាពរសង្កែ">新加坡花生翻译有限公司</p>
+            <p class="mb-2">📧 support@pnuts.ai</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:text-purple-100 transition-colors">
+                    <i class="fab fa-facebook text-2xl"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:text-purple-100 transition-colors">
+                    <i class="fab fa-twitter text-2xl"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:text-purple-100 transition-colors">
+                    <i class="fab fa-linkedin text-2xl"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:text-purple-100 transition-colors">
+                    <i class="fab fa-instagram text-2xl"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <script type="text/babel">
+        function StarProduct() {
+            return (
+                <section id="star-product" className="py-20 cosmic-bg">
+                    <div className="container mx-auto px-4">
+                        <div className="flex items-center justify-center mb-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400 w-8 h-8 mr-2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <h2 className="text-3xl md:text-4xl font-bold text-center lang-item purple-glow" data-en="Star Product" data-km="ផលិតផលល្បីល្បាញ">明星产品</h2>
+                        </div>
+                        <div className="bg-gradient-to-br from-purple-900/50 to-indigo-900/50 border border-purple-500/50 backdrop-blur-sm rounded-lg">
+                            <div className="p-8">
+                                <h3 className="text-2xl font-semibold text-center mb-6 lang-item text-purple-300" data-en="Study Helper" data-km="ជំនួយការសិក្សា">学帮</h3>
+                                <p className="text-lg text-center mb-8 lang-item text-gray-300" data-en="Study Helper provides a dedicated H5-based translation area that records real-time translation history and continuously iterates through large language models to generate more accurate translation results. This allows international students to overcome language barriers, fully participate in classes, and ensure they don't miss key information. It also supports generating note summaries and mind maps, building knowledge graphs, asking questions about translation history, generating practice questions, expanding learning, and many other functions. This innovative interface not only improves communication efficiency and enhances cross-cultural communication skills but also provides users with the possibility of personalized learning and review anytime, anywhere, completely revolutionizing students' learning methods." data-km="ជំនួយការសិក្សាផ្តល់នូវតំបន់បកប្រែដោយឡែកមួយដែលផ្អែកលើ H5 ដែលកត់ត្រាប្រវត្តិបកប្រែភ្លាមៗ និងធ្វើការវិវត្តន៍ជាបន្តបន្ទាប់តាមរយៈគំរូភាសាធំៗ ដើម្បីបង្កើតលទ្ធផលបកប្រែកាន់តែត្រឹមត្រូវ។ នេះអនុញ្ញាតឱ្យនិស្សិតអន្តរជាតិអាចយកឈ្នះលើឧបសគ្គភាសា ចូលរួមយ៉ាងពេញលេញក្នុងថ្នាក់រៀន និងធានាថាពួកគេមិនខកខានព័ត៌មានសំខាន់ៗ។ វាក៏គាំទ្រការបង្កើតសេចក្តីសង្ខេបកំណត់ត្រា និងផែនទីគំនិត ការកសាងក្រាហ្វចំណេះដឹង ការសួរសំណួរអំពីប្រវត្តិបកប្រែ ការបង្កើតសំណួរអនុវត្ត ការពង្រីកការរៀនសូត្រ និងមុខងារផ្សេងៗជាច្រើនទៀត។ ចំណុចប្រទាក់ថ្មីប្រឌិតនេះមិនត្រឹមតែបង្កើនប្រសិទ្ធភាពទំនាក់ទំនង និងពង្រឹងជំនាញទំនាក់ទំនងឆ្លងវប្បធម៌ប៉ុណ្ណោះទេ ប៉ុន្តែថែមទាំងផ្តល់ឱ្យអ្នកប្រើប្រាស់នូវលទ្ធភាពនៃការរៀនសូត្រតាមបុគ្គល និងការរំលឹកឡើងវិញគ្រប់ពេលវេលា និងគ្រប់ទីកន្លែង  ដែលធ្វើឱ្យមានការផ្លាស់ប្តូរទាំងស្រុងនូវវិធីសាស្ត្ររៀនសូត្ររបស់និស្សិត។">学帮提供一个基于H5的专属翻译区域，实时记录历史翻译内容，并通过大语言模型不断迭代，生成更精准的翻译结果，让留学生能克服语言障碍，充分参与课堂，确保不会错过关键信息。同时支持生成笔记总结与思维导图，构建知识图谱，对翻译历史提问，生成练习题，扩展学习等多种功能。这个创新界面不仅提升了沟通效率，增强跨文化交流能力，还为用户提供个性化学习与随时随地回顾的可能性，彻底革新学生的学习方式。</p>
+                                <div className="grid md:grid-cols-2 gap-6 mb-8">
+                                    <FeatureCard
+                                        icon="🌍"
+                                        title="支持200+语言"
+                                        description="覆盖全球主要语言，满足多样化需求"
+                                        enTitle="Support for 200+ languages"
+                                        enDescription="Covering major global languages, meeting diverse needs"
+                                        kmTitle="គាំទ្រភាសាជាង ២០០"
+                                        kmDescription="គ្របដណ្តប់ភាសាសំខាន់ៗនៅលើពិភពលោក ឆ្លើយតបនឹងតម្រូវការចម្រុះ"
+                                    />
+                                    <FeatureCard
+                                        icon="⚡"
+                                        title="同步精准翻译"
+                                        description="实时翻译，准确传达每一个细节"
+                                        enTitle="Synchronized precise translation"
+                                        enDescription="Real-time translation, accurately conveying every detail"
+                                        kmTitle="ការបកប្រែត្រឹមត្រូវដែលធ្វើសមកាលកម្ម"
+                                        kmDescription="ការបកប្រែភ្លាមៗ ដោយបញ្ជូនព័ត៌មានលម្អិតគ្រប់យ៉ាងយ៉ាងត្រឹមត្រូវ"
+                                    />
+                                    <FeatureCard
+                                        icon="🔊"
+                                        title="翻译结果语音播报"
+                                        description="听觉辅助，提升学习效率"
+                                        enTitle="Voice broadcast of translation results"
+                                        enDescription="Audio assistance, improving learning efficiency"
+                                        kmTitle="ការផ្សាយសម្លេងនៃលទ្ធផលបកប្រែ"
+                                        kmDescription="ជំនួយផ្នែកសំឡេង បង្កើនប្រសិទ្ធភាពនៃការរៀនសូត្រ"
+                                    />
+                                    <FeatureCard
+                                        icon="🧠"
+                                        title="支持AI总结提问"
+                                        description="智能分析，深化理解学习内容"
+                                        enTitle="Support for AI summarization and questioning"
+                                        enDescription="Intelligent analysis, deepening understanding of learning content"
+                                        kmTitle="គាំទ្រការសង្ខេប និងការសួរសំណួរដោយ AI"
+                                        kmDescription="ការវិភាគដោយប្រាជ្ញាសិប្បនិម្មិត ជម្រៅការយល់ដឹងអំពីមាតិកាសិក្សា"
+                                    />
+                                </div>
+                                <div className="text-center">
+                                    <a href="https://meeting.pnuts.ai/home/9df6abe0-6ab1-4231-9dac-e8a31b5c98e6" target="_blank" rel="noopener noreferrer" className="inline-block bg-purple-600 hover:bg-purple-500 text-white px-8 py-3 rounded-full text-lg font-semibold transition-colors lang-item purple-glow" data-en="Try Demo" data-km="សាកល្បងឌីម៉ូ">
+                                        试用demo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )
+        }
+
+        function FeatureCard({ icon, title, description, enTitle, enDescription, kmTitle, kmDescription }) {
+            return (
+                <div className="flex items-start space-x-4 p-4 rounded-lg bg-purple-800/30 backdrop-blur-sm border border-purple-500/30">
+                    <div className="text-3xl">{icon}</div>
+                    <div>
+                        <h4 className="text-lg font-semibold mb-2 text-purple-300 lang-item" data-en={enTitle} data-km={kmTitle}>{title}</h4>
+                        <p className="text-sm text-gray-300 lang-item" data-en={enDescription} data-km={kmDescription}>{description}</p>
+                    </div>
+                </div>
+            )
+        }
+
+        ReactDOM.render(<StarProduct />, document.getElementById('star-product'));
+
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function toggleLanguageMenu() {
+            const menu = document.getElementById('languageMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function changeLanguage(lang) {
+            const elements = document.querySelectorAll('.lang-item, .nav-item');
+            elements.forEach(item => {
+                const text = item.getAttribute(`data-${lang}`);
+                if (text) {
+                    item.textContent = text;
+                }
+            });
+
+            document.documentElement.lang = lang;
+            toggleLanguageMenu();
+        }
+
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('languageMenu');
+            const icon = document.querySelector('.language-icon');
+            if (menu.style.display === 'block' && !menu.contains(event.target) && !icon.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
+        window.onload = function() {
+            document.getElementById('languageMenu').style.display = 'none';
+            
+            document.querySelectorAll('.lang-item, .nav-item').forEach(item => {
+                if (!item.hasAttribute('data-zh')) {
+                    item.setAttribute('data-zh', item.textContent.trim());
+                }
+            });
+
+            changeLanguage('zh');
+        };
+    </script>
+</body>
+</html>
