@@ -336,28 +336,18 @@
 
     <script>
     function handleClick(e, language) {
-        const button = e.currentTarget;
-        
-        if (button.classList.contains('loading')) {
-            e.preventDefault();
-            return;
-        }
-
-        button.classList.add('loading');
-        
-        if (navigator.vibrate) {
-            navigator.vibrate(50);
-        }
-
-        console.log(`Redirecting to ${language} translation room`);
-        
-        e.preventDefault();
-        setTimeout(() => {
-            alert(`You selected: ${language}`);
-            button.classList.remove('loading');
-            // window.location.href = button.href;
-        }, 1000);
+    const button = e.currentTarget;
+    
+    if (button.classList.contains('loading')) {
+        return;
     }
+
+    button.classList.add('loading');
+    
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+}
     </script>
 </body>
 </html>
