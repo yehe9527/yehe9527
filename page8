@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDrive - 去中心化网盘解决方案</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(180deg, #EFF6FF 0%, #FFFFFF 100%);
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .btn {
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+            color: white;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .border-left-colored {
+            border-left-width: 4px;
+            border-left-style: solid;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- 头部 Logo -->
+    <div class="text-center py-8 px-4">
+        <h1 class="text-3xl font-bold text-blue-600 mb-2">TDrive</h1>
+        <p class="text-sm text-gray-600">去中心化网盘解决方案</p>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div class="px-4 pb-8 space-y-4 max-w-md mx-auto">
+        <!-- 模块1：已安装Telegram用户 -->
+        <div class="card border-left-colored" style="border-left-color: #3B82F6;">
+            <div class="p-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2"/>
+                    </svg>
+                    <h2 class="text-lg font-semibold">立即使用</h2>
+                </div>
+                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+                    已有 Telegram？现在开始使用 TDrive，<br>
+                    即可获得 300 万积分专属奖励！
+                </p>
+                <a href="tg://resolve?domain=TDriveBot" class="btn block bg-blue-500 hover:bg-blue-600">
+                    打开 Telegram 使用
+                </a>
+            </div>
+        </div>
+
+        <!-- 模块2：未安装Telegram用户 -->
+        <div class="card border-left-colored" style="border-left-color: #10B981;">
+            <div class="p-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    <h2 class="text-lg font-semibold">了解更多</h2>
+                </div>
+                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+                    还没接触过 TDrive？让我们告诉你<br>
+                    为什么去中心化存储是未来的趋势。
+                </p>
+                <a href="#" class="btn block bg-green-500 hover:bg-green-600">
+                    查看产品介绍
+                </a>
+            </div>
+        </div>
+
+        <!-- 模块3：投资者表单 -->
+        <div class="card border-left-colored" style="border-left-color: #8B5CF6;">
+            <div class="p-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <h2 class="text-lg font-semibold">投资合作</h2>
+                </div>
+                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+                    看好 TDrive 的发展前景？<br>
+                    期待与您深入交流项目合作机会。
+                </p>
+                <a href="#" class="btn block bg-purple-500 hover:bg-purple-600">
+                    留下联系方式
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
