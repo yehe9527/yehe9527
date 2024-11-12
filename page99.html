@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一键充值工具</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button.config {
+            background: #2196F3;
+        }
+        button.config:hover {
+            background: #1976D2;
+        }
+        button.delete {
+            background: #f44336;
+        }
+        button.delete:hover {
+            background: #d32f2f;
+        }
+        .config-panel {
+            display: none;
+        }
+        .config-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>一键充值工具</h2>
+        <form id="rechargeForm">
+            <div class="form-group">
+                <label for="configSelect">选择配置:</label>
+                <select id="configSelect"></select>
+            </div>
+            <div class="form-group">
+                <label for="domain">主站域名:</label>
+                <input type="text" id="domain" required>
+            </div>
+            <div class="form-group">
+                <label for="adminId">管理员ID:</label>
+                <input type="text" id="adminId" required>
+            </div>
+            <div class="form-group">
+                <label for="amount">默认充值额度:</label>
+                <input type="number" id="amount" required>
+            </div>
+            <div class="form-group">
+                <label for="userId">用户ID:</label>
+                <input type="text" id="userId" required>
+            </div>
+            <button type="submit">一键充值</button>
+            <button type="button" class="config" onclick="toggleConfigPanel()">配置管理</button>
+        </form>
+    </div>
+
+    <div id="configPanel" class="container config-panel">
+        <h2>配置管理</h2>
+        <form id="configForm">
+            <div class="form-group">
+                <label for="configName">配置名称:</label>
+                <input type="text" id="configName" required>
+            </div>
+            <div class="form-group">
+                <label for="configDomain">主站域名:</label>
+                <input type="text" id="configDomain" required>
+            </div>
+            <div class="form-group">
+                <label for="configAdminId">管理员ID:</label>
+                <input type="text" id="configAdminId" required>
+            </div>
+            <div class="form-group">
+                <label for="configAmount">默认充值额度:</label>
+                <input type="number" id="configAmount" required>
+            </div>
+            <button type="submit">保存配置</button>
+        </form>
+
+        <div id="configList">
+            <!-- 已保存的配置将显示在这里 -->
+        </div>
+    </div>
+
+    <script>
+        // 配置管理
+        let configs = JSON.parse(localStorage.getItem('rechargeConfigs') || '{}');
+
+        function saveConfigs() {
+            localStorage.setItem('rechargeConfigs', JSON.stringify(configs));
+            updateConfigList();
+            updateConfigSelect();
+        }
+
+        function addConfig(name, domain, adminId, amount) {
+            configs[name] = { domain, adminId, amount };
+            saveConfigs();
+        }
+
+        function deleteConfig(name) {
+            delete configs[name];
+            saveConfigs();
+        }
+
+        function updateConfigList() {
+            const configList = document.getElementById('configList');
+            configList.innerHTML = '';
+            
+            Object.entries(configs).forEach(([name, config]) => {
+                const item = document.createElement('div');
+                item.className = 'config-item';
+                item.innerHTML = `
+                    <strong>${name}</strong><br>
+                    域名: ${config.domain}<br>
+                    管理员ID: ${config.adminId}<br>
+                    默认额度: ${config.amount}<br>
+                    <button type="button" class="delete" onclick="deleteConfig('${name}')">删除配置</button>
+                `;
+                configList.appendChild(item);
+            });
+        }
+
+        function updateConfigSelect() {
+            const select = document.getElementById('configSelect');
+            select.innerHTML = '<option value="">选择配置...</option>';
+            
+            Object.keys(configs).forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                select.appendChild(option);
+            });
+        }
+
+        // 切换配置面板显示
+        function toggleConfigPanel() {
+            const panel = document.getElementById('configPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            updateConfigList();
+            updateConfigSelect();
+        });
+
+        // 配置表单提交
+        document.getElementById('configForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('configName').value.trim();
+            const domain = document.getElementById('configDomain').value.trim();
+            const adminId = document.getElementById('configAdminId').value.trim();
+            const amount = document.getElementById('configAmount').value;
+
+            addConfig(name, domain, adminId, amount);
+            this.reset();
+        });
+
+        // 选择配置时自动填充
+        document.getElementById('configSelect').addEventListener('change', function(e) {
+            const selectedConfig = configs[this.value];
+            if (selectedConfig) {
+                document.getElementById('domain').value = selectedConfig.domain;
+                document.getElementById('adminId').value = selectedConfig.adminId;
+                document.getElementById('amount').value = selectedConfig.amount;
+            }
+        });
+
+        // 充值表单提交
+        document.getElementById('rechargeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const domain = document.getElementById('domain').value.trim();
+            const adminId = document.getElementById('adminId').value.trim();
+            const userId = document.getElementById('userId').value.trim();
+            const amount = document.getElementById('amount').value;
+
+            const link = `https://${domain}/test/balance/addtime/${adminId}/${userId}/${amount}`;
+            
+            // 打开链接
+            const popup = window.open(link, '_blank');
+            
+            // 1秒后关闭新窗口
+            setTimeout(() => {
+                if (popup) {
+                    popup.close();
+                }
+                // 只清空用户ID
+                document.getElementById('userId').value = '';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
