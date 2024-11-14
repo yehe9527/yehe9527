@@ -38,17 +38,21 @@
                     const inputData = event.inputBuffer.getChannelData(0);
                     const audioData = Float32Array.from(inputData);
 
-                    // 准备 ONNX 输入张量
+                    // 准备 ONNX 输入张量，并使用 "speech" 作为输入名称
                     const tensor = new ort.Tensor("float32", audioData, [1, 1, audioData.length]);
-                    const feeds = { input: tensor };
+                    const feeds = { speech: tensor };
 
-                    // 模型推理
-                    const results = await session.run(feeds);
-                    const output = results.output.data[0];
+                    try {
+                        // 模型推理
+                        const results = await session.run(feeds);
+                        const output = results.logits.data[0]; // 使用 "logits" 作为输出名称
 
-                    // 检测语音
-                    const isSpeech = output > THRESHOLD;
-                    document.getElementById("status").innerText = isSpeech ? "Speech Detected" : "No Speech";
+                        // 检测语音
+                        const isSpeech = output > THRESHOLD;
+                        document.getElementById("status").innerText = isSpeech ? "Speech Detected" : "No Speech";
+                    } catch (error) {
+                        console.error("推理时出错:", error);
+                    }
                 };
             }).catch((error) => {
                 console.error("麦克风访问出错:", error);
