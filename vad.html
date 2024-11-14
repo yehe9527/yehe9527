@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Speech Detection</title>
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+</head>
+<body>
+    <h1>Speech Detection Status: <span id="status">No Speech</span></h1>
+
+    <script>
+        // 使用 GitHub Raw URL 来访问模型文件
+        const MODEL_PATH = "https://github.com/yehe9527/yehe9527/raw/refs/heads/main/model.onnx";
+        const THRESHOLD = 0.5;  // 设置语音检测阈值
+
+        async function loadModel() {
+            try {
+                // 加载 FSMN-VAD ONNX 模型
+                const session = await ort.InferenceSession.create(MODEL_PATH);
+                console.log("模型加载成功！");
+                return session;
+            } catch (error) {
+                console.error("模型加载失败:", error);
+            }
+        }
+
+        function setupAudioProcessing(session) {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(stream);
+                const processor = audioContext.createScriptProcessor(1024, 1, 1);
+
+                source.connect(processor);
+                processor.connect(audioContext.destination);
+
+                processor.onaudioprocess = async (event) => {
+                    const inputData = event.inputBuffer.getChannelData(0);
+                    const audioData = Float32Array.from(inputData);
+
+                    // 准备 ONNX 输入张量
+                    const tensor = new ort.Tensor("float32", audioData, [1, 1, audioData.length]);
+                    const feeds = { input: tensor };
+
+                    // 模型推理
+                    const results = await session.run(feeds);
+                    const output = results.output.data[0];
+
+                    // 检测语音
+                    const isSpeech = output > THRESHOLD;
+                    document.getElementById("status").innerText = isSpeech ? "Speech Detected" : "No Speech";
+                };
+            }).catch((error) => {
+                console.error("麦克风访问出错:", error);
+            });
+        }
+
+        // 主函数
+        async function main() {
+            const session = await loadModel();
+            if (session) {
+                setupAudioProcessing(session);
+            }
+        }
+
+        // 运行主函数
+        main();
+    </script>
+</body>
+</html>
