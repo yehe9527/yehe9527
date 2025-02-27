@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一键充值工具</title>
+    <title>用户管理工具</title>
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
-            max-width: 400px;
+            max-width: 500px;
             margin: 20px auto;
             padding: 20px;
             background: #f5f5f5;
@@ -60,7 +60,20 @@
         button.delete:hover {
             background: #d32f2f;
         }
-        .config-panel {
+        button.return {
+            background: #607D8B;
+        }
+        button.return:hover {
+            background: #455A64;
+        }
+        button.menu-btn {
+            background: #673AB7;
+            margin: 5px 0;
+        }
+        button.menu-btn:hover {
+            background: #5E35B1;
+        }
+        .config-panel, .page {
             display: none;
         }
         .config-item {
@@ -70,38 +83,152 @@
             border-radius: 4px;
             border: 1px solid #ddd;
         }
+        #rechargeResult {
+            display: none;
+        }
+        .result-success {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .result-error {
+            color: #f44336;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .result-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .time-display {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .menu-container {
+            text-align: center;
+            padding: 20px;
+        }
+        .menu-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        #createUserResponse {
+            height: 150px;
+            overflow: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- 主菜单 -->
+    <div id="mainMenu" class="container menu-container">
+        <h2 class="menu-title">用户管理工具</h2>
+        <div class="form-group">
+            <label for="mainConfigSelect">选择配置:</label>
+            <select id="mainConfigSelect"></select>
+        </div>
+        <button class="config" onclick="showPage('configPanel')">配置管理</button>
+        <button class="menu-btn" onclick="showPage('createUserPage')">创建新用户</button>
+        <button class="menu-btn" onclick="showPage('rechargePage')">用户充值</button>
+    </div>
+
+    <!-- 创建用户页面 -->
+    <div id="createUserPage" class="container page">
+        <h2>创建新用户</h2>
+        <form id="createUserForm">
+            <div class="form-group">
+                <label for="serverType">服务器类型:</label>
+                <div style="display: flex; align-items: center;">
+                    <input type="checkbox" id="createTestServer" style="width: auto; margin-right: 10px;">
+                    <label for="createTestServer" style="font-weight: normal;">测试服</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="createAdminId">管理员ID:</label>
+                <input type="text" id="createAdminId" required>
+            </div>
+            <div class="form-group">
+                <label for="username">用户名:</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码:</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPwd">确认密码:</label>
+                <input type="password" id="confirmPwd" required>
+            </div>
+            <div class="form-group">
+                <label for="addTime">添加时间(分钟):</label>
+                <input type="number" id="addTime" value="60" required>
+            </div>
+            <button type="submit">创建用户</button>
+            <button type="button" class="return" onclick="showPage('mainMenu')">返回主菜单</button>
+        </form>
+        <div class="form-group">
+            <label for="createUserResponse">响应结果:</label>
+            <div id="createUserResponse"></div>
+        </div>
+    </div>
+
+    <!-- 充值页面 -->
+    <div id="rechargePage" class="container page">
         <h2>一键充值工具</h2>
         <form id="rechargeForm">
             <div class="form-group">
-                <label for="configSelect">选择配置:</label>
-                <select id="configSelect"></select>
-            </div>
-            <div class="form-group">
-                <label for="domain">主站域名:</label>
-                <input type="text" id="domain" required>
+                <label for="serverType">服务器类型:</label>
+                <div style="display: flex; align-items: center;">
+                    <input type="checkbox" id="isTestServer" style="width: auto; margin-right: 10px;">
+                    <label for="isTestServer" style="font-weight: normal;">测试服</label>
+                </div>
+                <input type="hidden" id="domain">
             </div>
             <div class="form-group">
                 <label for="adminId">管理员ID:</label>
                 <input type="text" id="adminId" required>
             </div>
             <div class="form-group">
-                <label for="amount">默认充值额度:</label>
-                <input type="number" id="amount" required>
+                <label for="amountTime">充值额度:</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="number" id="hours" placeholder="小时" min="0" style="flex: 1;" onchange="updateTotalSeconds()">
+                    <input type="number" id="minutes" placeholder="分钟" min="0" max="59" style="flex: 1;" onchange="updateTotalSeconds()">
+                    <input type="number" id="seconds" placeholder="秒" min="0" max="59" style="flex: 1;" onchange="updateTotalSeconds()">
+                </div>
+                <input type="hidden" id="amount" required>
+            </div>
+            <div class="form-group">
+                <label for="totalSeconds">总秒数:</label>
+                <input type="number" id="totalSeconds" onchange="updateTimeUnits()" placeholder="请输入总秒数">
             </div>
             <div class="form-group">
                 <label for="userId">用户ID:</label>
                 <input type="text" id="userId" required>
             </div>
             <button type="submit">一键充值</button>
-            <button type="button" class="config" onclick="toggleConfigPanel()">配置管理</button>
+            <button type="button" class="return" onclick="showPage('mainMenu')">返回主菜单</button>
         </form>
     </div>
 
-    <div id="configPanel" class="container config-panel">
+    <!-- 配置管理面板 -->
+    <div id="configPanel" class="container">
         <h2>配置管理</h2>
         <form id="configForm">
             <div class="form-group">
@@ -109,23 +236,41 @@
                 <input type="text" id="configName" required>
             </div>
             <div class="form-group">
-                <label for="configDomain">主站域名:</label>
-                <input type="text" id="configDomain" required>
+                <label for="serverType">服务器类型:</label>
+                <div style="display: flex; align-items: center;">
+                    <input type="checkbox" id="configIsTestServer" style="width: auto; margin-right: 10px;">
+                    <label for="configIsTestServer" style="font-weight: normal;">测试服</label>
+                </div>
+                <input type="hidden" id="configDomain">
             </div>
             <div class="form-group">
                 <label for="configAdminId">管理员ID:</label>
                 <input type="text" id="configAdminId" required>
             </div>
             <div class="form-group">
-                <label for="configAmount">默认充值额度:</label>
-                <input type="number" id="configAmount" required>
+                <label for="configAmount">默认充值额度(秒):</label>
+                <input type="number" id="configAmount" required placeholder="输入总秒数">
             </div>
             <button type="submit">保存配置</button>
+            <button type="button" class="return" onclick="showPage('mainMenu')">返回主菜单</button>
         </form>
 
         <div id="configList">
             <!-- 已保存的配置将显示在这里 -->
         </div>
+    </div>
+
+    <!-- 充值结果页面 -->
+    <div id="rechargeResult" class="container">
+        <h2>充值结果</h2>
+        <div id="resultStatus"></div>
+        <div class="result-details">
+            <p id="remainingTimeText">剩余时间:</p>
+            <div class="time-display" id="remainingTime"></div>
+            <p id="errorDetails"></p>
+            <p id="jsonResponse"></p>
+        </div>
+        <button type="button" class="return" onclick="hideResult()">返回</button>
     </div>
 
     <script>
@@ -135,11 +280,11 @@
         function saveConfigs() {
             localStorage.setItem('rechargeConfigs', JSON.stringify(configs));
             updateConfigList();
-            updateConfigSelect();
+            updateConfigSelects();
         }
 
-        function addConfig(name, domain, adminId, amount) {
-            configs[name] = { domain, adminId, amount };
+        function addConfig(name, isTestServer, adminId, amount) {
+            configs[name] = { isTestServer, adminId, amount };
             saveConfigs();
         }
 
@@ -157,37 +302,151 @@
                 item.className = 'config-item';
                 item.innerHTML = `
                     <strong>${name}</strong><br>
-                    域名: ${config.domain}<br>
+                    服务器: ${config.isTestServer ? '测试服' : '正式服'}<br>
                     管理员ID: ${config.adminId}<br>
-                    默认额度: ${config.amount}<br>
+                    默认额度: ${config.amount}秒<br>
                     <button type="button" class="delete" onclick="deleteConfig('${name}')">删除配置</button>
                 `;
                 configList.appendChild(item);
             });
         }
 
-        function updateConfigSelect() {
-            const select = document.getElementById('configSelect');
-            select.innerHTML = '<option value="">选择配置...</option>';
+        function updateConfigSelects() {
+            // 更新主菜单的选择框
+            const mainSelect = document.getElementById('mainConfigSelect');
+            mainSelect.innerHTML = '<option value="">选择配置...</option>';
             
             Object.keys(configs).forEach(name => {
                 const option = document.createElement('option');
                 option.value = name;
                 option.textContent = name;
-                select.appendChild(option);
+                mainSelect.appendChild(option);
             });
         }
 
-        // 切换配置面板显示
-        function toggleConfigPanel() {
-            const panel = document.getElementById('configPanel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        // 选择配置时自动填充所有页面的相关字段
+        function applySelectedConfig(configName) {
+            const selectedConfig = configs[configName];
+            if (selectedConfig) {
+                // 设置充值页面的值
+                document.getElementById('isTestServer').checked = selectedConfig.isTestServer;
+                document.getElementById('adminId').value = selectedConfig.adminId;
+                document.getElementById('totalSeconds').value = selectedConfig.amount;
+                updateTimeUnits();
+                
+                // 设置创建用户页面的值
+                document.getElementById('createTestServer').checked = selectedConfig.isTestServer;
+                document.getElementById('createAdminId').value = selectedConfig.adminId;
+            }
+        }
+        
+        // 获取当前选择的域名
+        function getDomain(isTest) {
+            return isTest ? 'test-gpt-server.bdnft.com' : 'gpt-server.bdnft.com';
         }
 
+        // 页面导航
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.container').forEach(container => {
+                if (container.id) {
+                    container.style.display = 'none';
+                }
+            });
+            
+            // 显示请求的页面
+            if (pageId === 'mainMenu') {
+                document.getElementById('mainMenu').style.display = 'block';
+            } else {
+                document.getElementById(pageId).style.display = 'block';
+            }
+        }
+
+        // 显示充值结果
+        function showResult(data) {
+            document.getElementById('rechargePage').style.display = 'none';
+            document.getElementById('rechargeResult').style.display = 'block';
+            
+            const resultStatus = document.getElementById('resultStatus');
+            const remainingTime = document.getElementById('remainingTime');
+            const errorDetails = document.getElementById('errorDetails');
+            const jsonResponse = document.getElementById('jsonResponse');
+            const remainingTimeText = document.getElementById('remainingTimeText');
+            
+            // 格式化JSON展示
+            jsonResponse.textContent = `原始响应: ${JSON.stringify(data)}`;
+            
+            if (data.code === 0) {
+                // 充值成功
+                resultStatus.innerHTML = '<div class="result-success">充值成功!</div>';
+                
+                // 计算时间
+                const seconds = data.data;
+                const totalMinutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                
+                let timeDisplay = `${totalMinutes}分钟`;
+                if (remainingSeconds > 0) {
+                    timeDisplay += ` ${remainingSeconds}秒`;
+                }
+                
+                remainingTime.textContent = timeDisplay;
+                errorDetails.textContent = '';
+            } else {
+                // 充值失败
+                resultStatus.innerHTML = '<div class="result-error">充值失败!</div>';
+                remainingTimeText.textContent = '错误信息:';
+                remainingTime.textContent = '';
+                errorDetails.textContent = data.errorMsg || '未知错误';
+            }
+        }
+
+        // 隐藏充值结果，返回主界面
+        function hideResult() {
+            document.getElementById('rechargeResult').style.display = 'none';
+            document.getElementById('rechargePage').style.display = 'block';
+            // 只清空用户ID
+            document.getElementById('userId').value = '';
+        }
+
+        // 更新总秒数
+        function updateTotalSeconds() {
+            const hours = parseInt(document.getElementById('hours').value || 0);
+            const minutes = parseInt(document.getElementById('minutes').value || 0);
+            const seconds = parseInt(document.getElementById('seconds').value || 0);
+            
+            const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            document.getElementById('totalSeconds').value = totalSeconds;
+            document.getElementById('amount').value = totalSeconds;
+        }
+        
+        // 根据总秒数更新时、分、秒
+        function updateTimeUnits() {
+            const totalSeconds = parseInt(document.getElementById('totalSeconds').value || 0);
+            
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            document.getElementById('hours').value = hours;
+            document.getElementById('minutes').value = minutes;
+            document.getElementById('seconds').value = seconds;
+            document.getElementById('amount').value = totalSeconds;
+        }
+        
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
+            // 显示主菜单
+            showPage('mainMenu');
+            
+            // 初始化配置
             updateConfigList();
-            updateConfigSelect();
+            updateConfigSelects();
+            
+            // 监听主菜单中的配置选择变化
+            document.getElementById('mainConfigSelect').addEventListener('change', function(e) {
+                applySelectedConfig(this.value);
+            });
         });
 
         // 配置表单提交
@@ -195,46 +454,117 @@
             e.preventDefault();
             
             const name = document.getElementById('configName').value.trim();
-            const domain = document.getElementById('configDomain').value.trim();
+            const isTestServer = document.getElementById('configIsTestServer').checked;
             const adminId = document.getElementById('configAdminId').value.trim();
             const amount = document.getElementById('configAmount').value;
 
-            addConfig(name, domain, adminId, amount);
+            addConfig(name, isTestServer, adminId, amount);
+            
+            // 重置表单并显示通知
             this.reset();
-        });
-
-        // 选择配置时自动填充
-        document.getElementById('configSelect').addEventListener('change', function(e) {
-            const selectedConfig = configs[this.value];
-            if (selectedConfig) {
-                document.getElementById('domain').value = selectedConfig.domain;
-                document.getElementById('adminId').value = selectedConfig.adminId;
-                document.getElementById('amount').value = selectedConfig.amount;
-            }
+            alert(`配置 "${name}" 已保存`);
         });
 
         // 充值表单提交
         document.getElementById('rechargeForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const domain = document.getElementById('domain').value.trim();
+            const isTestServer = document.getElementById('isTestServer').checked;
+            const domain = getDomain(isTestServer);
             const adminId = document.getElementById('adminId').value.trim();
             const userId = document.getElementById('userId').value.trim();
             const amount = document.getElementById('amount').value;
 
-            const link = `https://${domain}/test/balance/addtime/${adminId}/${userId}/${amount}`;
+            const url = `https://${domain}/test/balance/addtime/${adminId}/${userId}/${amount}`;
             
-            // 打开链接
-            const popup = window.open(link, '_blank');
+            // 显示加载中状态
+            document.getElementById('resultStatus').innerHTML = '<div>正在充值，请稍候...</div>';
+            document.getElementById('rechargePage').style.display = 'none';
+            document.getElementById('rechargeResult').style.display = 'block';
             
-            // 1秒后关闭新窗口
-            setTimeout(() => {
-                if (popup) {
-                    popup.close();
+            // 使用fetch获取结果
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    showResult(data);
+                })
+                .catch(error => {
+                    // 显示错误
+                    showResult({
+                        code: -1,
+                        data: 0,
+                        errorMsg: `请求失败: ${error.message}`
+                    });
+                });
+        });
+
+        // 创建用户表单提交
+        document.getElementById('createUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const isTestServer = document.getElementById('createTestServer').checked;
+            const domain = getDomain(isTestServer);
+            const adminId = document.getElementById('createAdminId').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPwd = document.getElementById('confirmPwd').value;
+            const time = document.getElementById('addTime').value;
+            
+            const data = {
+                uid: adminId,
+                user_name: username,
+                password: password,
+                confirm_pwd: confirmPwd,
+                time: parseInt(time)
+            };
+            
+            // 显示加载状态
+            const responseElement = document.getElementById('createUserResponse');
+            responseElement.innerHTML = '<div>正在提交请求，请稍候...</div>';
+            
+            // 发送请求
+            fetch(`https://${domain}/test/console/add/user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                const statusCode = response.status;
+                return response.json().then(data => {
+                    return { status: statusCode, data: data };
+                }).catch(() => {
+                    return response.text().then(text => {
+                        return { status: statusCode, data: text };
+                    });
+                });
+            })
+            .then(result => {
+                // 格式化响应
+                let formattedResponse;
+                if (typeof result.data === 'object') {
+                    formattedResponse = JSON.stringify(result.data, null, 2);
+                } else {
+                    formattedResponse = result.data;
                 }
-                // 只清空用户ID
-                document.getElementById('userId').value = '';
-            }, 1000);
+                
+                // 显示响应
+                responseElement.innerHTML = `
+                    <div><strong>状态码: ${result.status}</strong></div>
+                    <pre>${formattedResponse}</pre>
+                `;
+                
+                // 成功后清空表单中的用户名和密码字段，保留管理员ID
+                if (result.status === 200 && result.data && result.data.code === 0) {
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                    document.getElementById('confirmPwd').value = '';
+                }
+            })
+            .catch(error => {
+                responseElement.innerHTML = `<div class="result-error">错误: ${error.message}</div>`;
+            });
         });
     </script>
 </body>
