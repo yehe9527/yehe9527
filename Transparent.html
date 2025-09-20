@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>实时透明字幕</title>
+    <style>
+        /* --- 核心部分：确保背景透明 --- */
+        body {
+            /* 这是实现透明通道的关键！ */
+            background-color: transparent;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* 隐藏滚动条 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+        /* --- 字幕容器样式 --- */
+        #subtitle-container {
+            /* 定位到底部中央 */
+            position: absolute;
+            bottom: 5%; /* 距离底部 5% 的位置 */
+            left: 0;
+            width: 100%;
+            
+            /* 文本样式 */
+            text-align: center;
+            color: white;
+            font-size: 48px; /* 字体可以大一些，便于观看 */
+            font-weight: bold;
+
+            /* 关键：添加文字阴影，确保字幕在任何背景下都清晰可见 */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+            
+            /* 为了让字幕出现得更自然，可以加个简单的动画 */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* 定义一个简单的淡入动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 用于强制触发动画的辅助类 */
+        .visible {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="subtitle-container"></div>
+
+    <script>
+        // --- 核心部分：模拟实时接收字幕数据 ---
+        
+        // 1. 找到显示字幕的容器
+        const subtitleElement = document.getElementById('subtitle-container');
+
+        // 2. 准备一些模拟的字幕数据
+        const sampleSubtitles = [
+            "您好，欢迎使用实时翻译服务。",
+            "Hello, and welcome to the real-time translation service.",
+            "这项技术可以将语音实时转换成带透明通道的字幕。",
+            "This technology can convert speech into transparent subtitles in real-time.",
+            "现在您看到的就是最终叠加效果。",
+            "What you are seeing now is the final overlay effect.",
+            "" // 留一个空字符串来模拟字幕消失
+        ];
+
+        let currentIndex = 0;
+
+        // 3. 模拟实时更新：每隔4秒钟更新一次字幕
+        // 在您的真实产品中，这里应该替换为 WebSocket 接收服务器推送的代码
+        setInterval(() => {
+            // 获取下一条字幕
+            const newText = sampleSubtitles[currentIndex];
+            subtitleElement.innerText = newText;
+
+            // 为了让动画每次都触发，可以移除并重新添加动画类
+            subtitleElement.classList.remove('visible');
+            // void subtitleElement.offsetWidth; // 强制浏览器重绘
+            subtitleElement.classList.add('visible');
+            
+            // 移动到下一条，如果到了末尾就循环回第一条
+            currentIndex = (currentIndex + 1) % sampleSubtitles.length;
+
+        }, 4000); // 4000毫秒 = 4秒
+
+    </script>
+
+</body>
+</html>
